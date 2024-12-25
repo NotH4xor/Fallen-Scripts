@@ -1,6 +1,6 @@
 -- Keybinds | W, A, S, D but replaced with T, F, Y, H
 local UIS, RS, Camera = game:GetService("UserInputService"), game:GetService("RunService"), workspace.CurrentCamera
-local keybind, speed = Enum.KeyCode.K, 0.9  -- Adjust speed to a slower value
+local keybind, speed = Enum.KeyCode.K, 0.7  -- Adjust speed to a slower value
 local droneCFrame = Camera.CFrame
 local isFlying = false
 
@@ -14,13 +14,13 @@ end
 local function updateFreecam()
     if isFlying then
         local delta = UIS:GetMouseDelta()
-        droneCFrame = droneCFrame * CFrame.Angles(-math.rad(delta.Y * 1), -math.rad(delta.X * 1), 0)
+        droneCFrame = droneCFrame * CFrame.Angles(math.rad(-delta.Y * 0.1), math.rad(-delta.X * 0.1), 0)
 
         local mv = Vector3.new()
-        mv = mv + (UIS:IsKeyDown(Enum.KeyCode.T) and (droneCFrame.LookVector * speed) or Vector3.new())
-        mv = mv + (UIS:IsKeyDown(Enum.KeyCode.F) and (-droneCFrame.RightVector * speed) or Vector3.new())
-        mv = mv + (UIS:IsKeyDown(Enum.KeyCode.Y) and (-droneCFrame.LookVector * speed) or Vector3.new())
-        mv = mv + (UIS:IsKeyDown(Enum.KeyCode.H) and (droneCFrame.RightVector * speed) or Vector3.new())
+        mv = mv + (UIS:IsKeyDown(Enum.KeyCode.W) and (droneCFrame.LookVector * speed) or Vector3.new())
+        mv = mv + (UIS:IsKeyDown(Enum.KeyCode.A) and (-droneCFrame.RightVector * speed) or Vector3.new())
+        mv = mv + (UIS:IsKeyDown(Enum.KeyCode.S) and (-droneCFrame.LookVector * speed) or Vector3.new())
+        mv = mv + (UIS:IsKeyDown(Enum.KeyCode.D) and (droneCFrame.RightVector * speed) or Vector3.new())
 
         droneCFrame = droneCFrame + mv
         Camera.CFrame = droneCFrame
