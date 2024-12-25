@@ -33,7 +33,7 @@ _G.TeamCheck = false   -- If set to true then the script would create ESP only f
 
 _G.ESPVisible = true   -- If set to true then the ESP will be visible and vice versa.
 _G.TextColor = Color3.new(0.235294, 1.000000, 0.000000)   -- The color that the boxes would appear as.
-_G.TextSize = 35   -- The size of the text.
+_G.TextSize = 20   -- The size of the text.
 _G.Center = true   -- If set to true then the script would be located at the center of the label.
 _G.Outline = true   -- If set to true then the text would have an outline.
 _G.OutlineColor = Color3.fromRGB(0, 0, 0)   -- The outline color of the text.
