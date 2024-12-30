@@ -1,0 +1,54 @@
+local UIS, RS, Camera = game:GetService("UserInputService"), game:GetService("RunService"), workspace.CurrentCamera
+local keybind = Enum.KeyCode.K -- Key to toggle freecam
+local speed = 0.9 -- Movement speed
+local droneCFrame = Camera.CFrame -- Start with the current camera position and orientation
+local isFlying = false
+local cameraRot = Vector2.new(0, 0)
+
+-- Toggles the freecam on and off
+local function toggleFreecam()
+    isFlying = not isFlying
+    if isFlying then
+        -- Initialize droneCFrame and rotation to match the current camera's position and rotation
+        droneCFrame = Camera.CFrame
+        local lookVector = droneCFrame.LookVector
+        cameraRot = Vector2.new(math.asin(-lookVector.Y), math.atan2(lookVector.X, lookVector.Z))
+    end
+end
+
+-- Smoothly update the freecam during flight mode
+local function StepFreecam(dt)
+    if isFlying then
+        -- Handle rotation with mouse input
+        local delta = UIS:GetMouseDelta()
+        cameraRot = cameraRot + Vector2.new(-delta.Y * 0.002, -delta.X * 0.002)
+
+        -- Clamp the vertical rotation (up/down)
+        cameraRot = Vector2.new(math.clamp(cameraRot.X, -math.rad(90), math.rad(90)), cameraRot.Y)
+
+        -- Construct the updated rotation CFrame
+        local rotCFrame = CFrame.fromOrientation(cameraRot.X, cameraRot.Y, 0)
+        droneCFrame = CFrame.new(droneCFrame.Position) * rotCFrame
+
+        -- Handle movement with T, F, Y, H keys
+        local moveVector = Vector3.new()
+        if UIS:IsKeyDown(Enum.KeyCode.F) then moveVector = moveVector + droneCFrame.LookVector * speed end
+        if UIS:IsKeyDown(Enum.KeyCode.V) then moveVector = moveVector - droneCFrame.LookVector * speed end
+
+        -- Update the droneCFrame position
+        droneCFrame = droneCFrame + moveVector * dt * 64
+
+        -- Update the camera
+        Camera.CFrame = droneCFrame
+    end
+end
+
+-- Connect the keybind to toggle freecam
+UIS.InputBegan:Connect(function(input, processed)
+    if not processed and input.KeyCode == keybind then
+        toggleFreecam()
+    end
+end)
+
+-- Update the camera every frame
+RS.RenderStepped:Connect(StepFreecam)
