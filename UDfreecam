@@ -1,4 +1,4 @@
--- Keybinds | W, A, S, D but replaced with T, F, Y, H
+-- Keybinds | W, A, S, D
 local UIS, RS, Camera = game:GetService("UserInputService"), game:GetService("RunService"), workspace.CurrentCamera
 local keybind, speed = Enum.KeyCode.K, 0.7  -- Adjust speed to a slower value
 local droneCFrame = Camera.CFrame
