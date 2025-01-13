@@ -1,54 +1,54 @@
-local UIS, RS, Camera = game:GetService("UserInputService"), game:GetService("RunService"), workspace.CurrentCamera
-local keybind = Enum.KeyCode.K -- Key to toggle freecam
-local speed = 0.9 -- Movement speed
-local droneCFrame = Camera.CFrame -- Start with the current camera position and orientation
-local isFlying = false
-local cameraRot = Vector2.new(0, 0)
+local userInputService = game:GetService("UserInputService")
+local runService = game:GetService("RunService")
+local camera = workspace.CurrentCamera
 
--- Toggles the freecam on and off
-local function toggleFreecam()
-    isFlying = not isFlying
-    if isFlying then
-        -- Initialize droneCFrame and rotation to match the current camera's position and rotation
-        droneCFrame = Camera.CFrame
-        local lookVector = droneCFrame.LookVector
-        cameraRot = Vector2.new(math.asin(-lookVector.Y), math.atan2(lookVector.X, lookVector.Z))
+local toggleKey = Enum.KeyCode.K
+
+local movementSpeed = 0.9
+
+local cameraCFrame = camera.CFrame
+local isCustomCameraMode = false
+local pitchYaw = Vector2.new(0, 0)
+
+local function toggleCustomCameraMode()
+    isCustomCameraMode = not isCustomCameraMode
+    if isCustomCameraMode then
+
+        cameraCFrame = camera.CFrame
+        local lookVector = -cameraCFrame.LookVector 
+        pitchYaw = Vector2.new(math.asin(-lookVector.Y), math.atan2(lookVector.X, lookVector.Z))
     end
 end
 
--- Smoothly update the freecam during flight mode
-local function StepFreecam(dt)
-    if isFlying then
-        -- Handle rotation with mouse input
-        local delta = UIS:GetMouseDelta()
-        cameraRot = cameraRot + Vector2.new(-delta.Y * 0.002, -delta.X * 0.002)
+local function updateCamera(deltaTime)
+    if isCustomCameraMode then
 
-        -- Clamp the vertical rotation (up/down)
-        cameraRot = Vector2.new(math.clamp(cameraRot.X, -math.rad(90), math.rad(90)), cameraRot.Y)
+        local mouseDelta = userInputService:GetMouseDelta()
 
-        -- Construct the updated rotation CFrame
-        local rotCFrame = CFrame.fromOrientation(cameraRot.X, cameraRot.Y, 0)
-        droneCFrame = CFrame.new(droneCFrame.Position) * rotCFrame
+        pitchYaw = pitchYaw + Vector2.new(-mouseDelta.Y * 0.002, -mouseDelta.X * 0.002)
 
-        -- Handle movement with T, F, Y, H keys
-        local moveVector = Vector3.new()
-        if UIS:IsKeyDown(Enum.KeyCode.F) then moveVector = moveVector + droneCFrame.LookVector * speed end
-        if UIS:IsKeyDown(Enum.KeyCode.V) then moveVector = moveVector - droneCFrame.LookVector * speed end
+        pitchYaw = Vector2.new(math.clamp(pitchYaw.X, -math.rad(90), math.rad(90)), pitchYaw.Y)
 
-        -- Update the droneCFrame position
-        droneCFrame = droneCFrame + moveVector * dt * 64
+        local newOrientation = CFrame.fromOrientation(pitchYaw.X, pitchYaw.Y, 0)
+        cameraCFrame = CFrame.new(cameraCFrame.Position) * newOrientation
 
-        -- Update the camera
-        Camera.CFrame = droneCFrame
+        local movementVector = Vector3.new()
+        if userInputService:IsKeyDown(Enum.KeyCode.F) then
+            movementVector = movementVector + cameraCFrame.LookVector * movementSpeed
+        end
+        if userInputService:IsKeyDown(Enum.KeyCode.V) then
+            movementVector = movementVector - cameraCFrame.LookVector * movementSpeed
+        end
+
+        cameraCFrame = cameraCFrame + movementVector * deltaTime * 64
+        camera.CFrame = cameraCFrame
     end
 end
 
--- Connect the keybind to toggle freecam
-UIS.InputBegan:Connect(function(input, processed)
-    if not processed and input.KeyCode == keybind then
-        toggleFreecam()
+userInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if not gameProcessedEvent and input.KeyCode == toggleKey then
+        toggleCustomCameraMode()
     end
 end)
 
--- Update the camera every frame
-RS.RenderStepped:Connect(StepFreecam)
+runService.RenderStepped:Connect(updateCamera)
