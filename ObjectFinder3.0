@@ -13,13 +13,13 @@ local drawingsEnabled = true
 local n = {
 	{partName = "Main", partSize = Vector3.new(4.184000015258789, 6.843999862670898, 2.950000047683716), espLabel = "TC", espColor = Color3.new(0, 1, 0)},
  
-	{partName = "CollisionPart", partSize = Vector3.new(2.799999952316284, 1.6999999284744263, 1.6999999284744263), espLabel = "?", espColor = Color3.new(1.000000, 0.000000, 0.000000)},
+	{partName = "CollisionPart", partSize = Vector3.new(2.799999952316284, 1.6999999284744263, 1.6999999284744263), espLabel = "?", espColor = Color3.new(255,165,0)},
  
 	{partName="Main", partSize=Vector3.new(4.622137546539307, 6.276729583740234, 3.1531553268432617), espLabel="l", espColor=Color3.new(1,0,0)},
  
 	{partName="EngineRotator", partSize=Vector3.new(0.5, 0.5, 0.5), espLabel="BOAT", espColor=Color3.new(1, 0, 0.749020)},
 
-	{partName="SeatModels", partSize=Vector3.new(1.9408552646636963, 3.2586300373077393, 6.495973587036133), espLabel="HELI", espColor=Color3.new(0.043,0.611,0.090)},
+	{partName="SeatModels", partSize=Vector3.new(1.9408552646636963, 3.2586300373077393, 6.495973587036133), espLabel="CHOPPER", espColor=Color3.new(0,191,255)},
 
 	{partName="Main", partSize=Vector3.new(2.636121988296509, 2.221893310546875, 2.636121988296509), espLabel="?", espColor=Color3.new(1,1,0)}
 }
